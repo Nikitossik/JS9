@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            box-sizing: border-box;
+        }
+
+        #wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .book {
+            width: 30%;
+            height: 300px;
+            display: inline-block;
+            margin-left: 5px;
+            position: relative;
+        }
+
+        .book img {
+            width: 90%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <button id='load'>Загрузить</button>
+    <div id="wrap"></div>
+    <script>
+        let loadBtn = document.getElementById('load'),
+            wrap = document.getElementById('wrap');
+
+        function loadBooks() {
+            let request = new XMLHttpRequest();
+
+            request.open("GET", "books.json", true);
+            request.setRequestHeader("Content-type", "application/json; charset=utf-8");
+            request.send();
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    let books = JSON.parse(request.responseText);
+                    insertBooks(books);
+                }
+            };
+        }
+
+        function insertBooks(books){
+            for(let i = 0; i < books.length; i++){
+                let bookBl = document.createElement('div');
+                bookBl.classList.add('book');
+                bookBl.innerHTML+= `<img src='${books[i].imageCover}'>
+                <p>Категория: ${books[i].category}</p>
+                <p>Цена: ${books[i].price}</p>
+                <p>Автор: ${books[i].author}</p>
+                <p>Осталось: ${books[i].count}</p>`;
+                wrap.append(bookBl);
+            }
+        }
+
+        loadBtn.addEventListener('click', loadBooks);
+    </script>
+</body>
+
+</html>
